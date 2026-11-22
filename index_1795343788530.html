@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رفيق</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f4fb;--card:#fff;--ink:#1a1f3d;--mute:#6b7191;--main:#2b3a9e;--on-main:#fff;--mint:#27c9a0;--coral:#ef5f67;--line:#e3e6f3;--bot:#e8ebfa;--sh:0 6px 24px rgba(43,58,158,.10)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1226;--card:#191d3b;--ink:#eceefb;--mute:#9399bd;--main:#5b6cf0;--line:#2a2f57;--bot:#232850;--sh:none}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Tajawal,system-ui,sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);max-width:520px;margin:0 auto}
+main{flex:1;overflow-y:auto;padding:14px 16px 16px}
+.view{display:none}.view.on{display:block;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.on{animation:none}}
+h1{font-size:22px;margin:4px 0 14px;font-weight:800}
+h2{font-size:16px;margin:18px 0 8px;font-weight:700}
+.hero{background:var(--main);color:#fff;border-radius:24px;padding:22px;box-shadow:var(--sh)}
+.hero small{opacity:.8;font-size:14px}
+.hero .big{font-size:42px;font-weight:800;margin:4px 0 14px;letter-spacing:-1px}
+.pair{display:flex;gap:10px}
+.pair div{flex:1;background:rgba(255,255,255,.14);border-radius:14px;padding:10px 12px;font-size:13px}
+.pair b{display:block;font-size:17px;margin-top:2px}
+.card{background:var(--card);border-radius:20px;padding:16px;box-shadow:var(--sh);margin-top:14px}
+.chart{display:flex;align-items:flex-end;gap:8px;height:110px;margin-top:10px}
+.chart div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;color:var(--mute);gap:4px}
+.chart i{display:block;width:100%;background:var(--main);border-radius:8px 8px 3px 3px;min-height:4px;transition:height .4s}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.acts button{background:var(--card);border:0;border-radius:18px;padding:12px 4px;font:inherit;font-size:12px;color:var(--ink);box-shadow:var(--sh);cursor:pointer}
+.acts span{display:block;font-size:22px;margin-bottom:4px}
+.row{display:flex;gap:8px;margin:10px 0}
+input{flex:1;min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font:inherit}
+.go{border:0;background:var(--main);color:var(--on-main);padding:0 20px;border-radius:14px;font:inherit;font-weight:700;cursor:pointer}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item.done span{text-decoration:line-through;color:var(--mute)}
+.item button{border:0;background:none;color:var(--mute);cursor:pointer;font-size:18px;padding:4px 8px}
+.in{color:var(--mint);font-weight:700}.out{color:var(--coral);font-weight:700}
+.empty{color:var(--mute);text-align:center;padding:18px 0}
+.msg{max-width:86%;padding:11px 14px;margin:8px 0;border-radius:18px;line-height:1.7;white-space:pre-wrap}
+.bot{background:var(--bot);border-end-start-radius:4px}
+.me{background:var(--main);color:#fff;margin-inline-start:auto;border-end-end-radius:4px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0}
+.chips button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer}
+#bar{display:none;padding:0 16px 6px}
+#bar.on{display:flex}
+nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;background:none;color:var(--mute);padding:9px 2px;font:inherit;font-size:12px;cursor:pointer}
+nav button span{display:block;font-size:20px}
+nav button.on{color:var(--main);font-weight:700}
+button:focus-visible,input:focus-visible{outline:2px solid var(--main);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <section class="view on" id="v-home">
+    <h1 id="hi">أهلاً بك 👋</h1>
+    <div class="hero">
+      <small>رصيدك الحالي</small>
+      <div class="big" id="bal">0</div>
+      <div class="pair"><div>الدخل<b id="sIn">0</b></div><div>المصروف<b id="sOut">0</b></div></div>
+    </div>
+    <div class="acts">
+      <button data-go="wallet"><span>💳</span>المحفظة</button>
+      <button data-go="chat"><span>✨</span>المساعد</button>
+      <button data-go="docs"><span>📄</span>الأوراق</button>
+      <button data-go="chat" data-say="ملخص"><span>📊</span>ملخص</button>
+    </div>
+    <div class="card"><b>مصروف آخر 7 أيام</b><div class="chart" id="chart"></div></div>
+    <div class="card"><b>مهامك</b>
+      <div class="row"><input id="taskIn" placeholder="أضف مهمة"><button class="go" id="taskAdd">+</button></div>
+      <div id="taskList"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-chat">
+    <h1>المساعد</h1>
+    <div id="log"></div>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <section class="view" id="v-wallet">
+    <h1>المحفظة</h1>
+    <div class="card" style="margin-top:0">
+      <div class="row"><input id="amt" type="number" inputmode="decimal" placeholder="المبلغ"><input id="note" placeholder="البيان"></div>
+      <div class="row"><button class="go" id="addIn" style="flex:1;padding:13px;background:var(--mint);color:#06382c">إيداع</button><button class="go" id="addOut" style="flex:1;padding:13px;background:var(--coral)">سحب</button></div>
+    </div>
+    <div class="card" id="txList"></div>
+  </section>
+
+  <section class="view" id="v-docs">
+    <h1>الأوراق والفواتير</h1>
+    <div class="row"><input id="docIn" placeholder="مثال: فاتورة الكهرباء"><button class="go" id="docAdd">حفظ</button></div>
+    <div class="card" id="docList" style="margin-top:0"></div>
+  </section>
+  <section class="view" id="v-shop">
+    <h1>قائمة المشتريات</h1>
+    <div class="row"><input id="shopIn" placeholder="مثال: خبز، حليب"><button class="go" id="shopAdd">إضافة</button></div>
+    <div class="card" id="shopList" style="margin-top:0"></div>
+  </section>
+</main>
+
+<div class="row" id="bar"><input id="chatIn" placeholder="اكتب ما تريد..."><button class="go" id="send">إرسال</button></div>
+<nav>
+  <button class="on" data-v="home"><span>🏠</span>الرئيسية</button>
+  <button data-v="chat"><span>✨</span>المساعد</button>
+  <button data-v="wallet"><span>💳</span>المحفظة</button>
+  <button data-v="docs"><span>📄</span>الأوراق</button>
+  <button data-v="shop"><span>🛒</span>المشتريات</button>
+</nav>
+
+<script>
+let S = { tasks: [], tx: [], docs: [], shop: [] };
+try { const r = localStorage.getItem('rafeeq2'); if (r) S = JSON.parse(r); } catch (e) {}
+S.shop = S.shop || [];
+const save = () => { try { localStorage.setItem('rafeeq2', JSON.stringify(S)); } catch (e) {} };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const day = t => new Date(t).toDateString();
+const sum = f => S.tx.filter(f).reduce((a, t) => a + t.v, 0);
+const balance = () => sum(() => true);
+
+const Modules = {
+  addTask(t) { S.tasks.unshift({ t, d: false }); save(); render(); return 'أضفت المهمة: ' + t; },
+  addTx(v, n) { S.tx.unshift({ v, n: n || (v > 0 ? 'إيداع' : 'سحب'), at: Date.now() }); save(); render(); return (v > 0 ? 'تم إيداع ' : 'تم سحب ') + Math.abs(v) + '. رصيدك الآن ' + balance(); },
+  addShop(n) { S.shop.unshift({ n, d: false }); save(); render(); return 'أضفت إلى المشتريات: ' + n; },
+  addDoc(n) { S.docs.unshift({ n }); save(); render(); return 'حفظت الورقة: ' + n; },
+  summary() { return 'رصيدك: ' + balance() + '\nالمهام المفتوحة: ' + S.tasks.filter(t => !t.d).length + '\nالأوراق المحفوظة: ' + S.docs.length + '\nالمشتريات المتبقية: ' + S.shop.filter(x => !x.d).length; }
+};
+
+async function assistant(text) {
+  const n = text.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  let m;
+  if ((m = n.match(/(?:ذكرني|ذكّرني|أضف مهمة|مهمة)\s*(?:ب|أن|ان)?\s*(.+)/))) return Modules.addTask(m[1]);
+  if ((m = n.match(/(?:أودع|ايداع|إيداع|أضف رصيد)\s*(\d+(?:\.\d+)?)/))) return Modules.addTx(+m[1]);
+  if ((m = n.match(/(?:اسحب|سحب|صرفت|دفعت)\s*(\d+(?:\.\d+)?)/))) return Modules.addTx(-m[1]);
+  if ((m = n.match(/(?:اشتري|اشتر|مشتريات)\s+(.+)/))) return Modules.addShop(m[1]);
+  if ((m = n.match(/(?:احفظ|ورقة|فاتورة)\s+(.+)/))) return Modules.addDoc(m[1]);
+  if (/رصيد|ملخص|وضعي/.test(n)) return Modules.summary();
+  // لاحقاً: return await askClaude(text); (عبر خادمك الآمن، ولا تضع مفتاح API هنا)
+  return 'أستطيع: إضافة مهام ("ذكرني بدفع الإيجار")، إيداع وسحب ("أودع 100")، حفظ أوراق ("فاتورة الكهرباء")، أو "ملخص".';
+}
+
+function bubble(t, who) { const d = document.createElement('div'); d.className = 'msg ' + who; d.textContent = t; $('log').appendChild(d); d.scrollIntoView({ block: 'end' }); }
+async function send(t) { t = (t || $('chatIn').value).trim(); if (!t) return; $('chatIn').value = ''; bubble(t, 'me'); bubble(await assistant(t), 'bot'); }
+
+function render() {
+  $('shopList').innerHTML = S.shop.length ? S.shop.map((x, i) => `<div class="item ${x.d ? 'done' : ''}"><span>${esc(x.n)}</span><span><button data-a="shopt" data-i="${i}" aria-label="تم الشراء">✓</button><button data-a="shopd" data-i="${i}" aria-label="حذف">✕</button></span></div>`).join('') : '<div class="empty">القائمة فارغة. أضف أول غرض</div>';
+  $('bal').textContent = balance().toLocaleString('en');
+  $('sIn').textContent = sum(t => t.v > 0).toLocaleString('en');
+  $('sOut').textContent = Math.abs(sum(t => t.v < 0)).toLocaleString('en');
+  const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return d; });
+  const vals = days.map(d => Math.abs(S.tx.filter(t => t.v < 0 && day(t.at) === d.toDateString()).reduce((a, t) => a + t.v, 0)));
+  const mx = Math.max(...vals, 1);
+  $('chart').innerHTML = days.map((d, i) => `<div><i style="height:${Math.max(vals[i] / mx * 80, 4)}px"></i>${d.toLocaleDateString('ar', { weekday: 'narrow' })}</div>`).join('');
+  $('taskList').innerHTML = S.tasks.length ? S.tasks.map((t, i) => `<div class="item ${t.d ? 'done' : ''}"><span>${esc(t.t)}</span><span><button data-a="tog" data-i="${i}" aria-label="إنجاز">✓</button><button data-a="del" data-i="${i}" aria-label="حذف">✕</button></span></div>`).join('') : '<div class="empty">لا مهام بعد</div>';
+  $('txList').innerHTML = S.tx.length ? S.tx.map(t => `<div class="item"><span>${esc(t.n)}</span><span class="${t.v > 0 ? 'in' : 'out'}">${t.v > 0 ? '+' : ''}${t.v}</span></div>`).join('') : '<div class="empty">لا عمليات بعد</div>';
+  $('docList').innerHTML = S.docs.length ? S.docs.map((d, i) => `<div class="item"><span>📄 ${esc(d.n)}</span><button data-a="deldoc" data-i="${i}" aria-label="حذف">✕</button></div>`).join('') : '<div class="empty">احفظ أول ورقة أو فاتورة</div>';
+}
+
+function go(v) {
+  document.querySelectorAll('nav button,.view').forEach(x => x.classList.remove('on'));
+  document.querySelector(`nav [data-v="${v}"]`).classList.add('on');
+  $('v-' + v).classList.add('on');
+  $('bar').classList.toggle('on', v === 'chat');
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.v));
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { go(b.dataset.go); if (b.dataset.say) send(b.dataset.say); });
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const i = +b.dataset.i;
+  if (b.dataset.a === 'tog') S.tasks[i].d = !S.tasks[i].d;
+  if (b.dataset.a === 'del') S.tasks.splice(i, 1);
+  if (b.dataset.a === 'deldoc') S.docs.splice(i, 1);
+  if (b.dataset.a === 'shopt') S.shop[i].d = !S.shop[i].d;
+  if (b.dataset.a === 'shopd') S.shop.splice(i, 1);
+  save(); render();
+});
+$('send').onclick = () => send();
+$('chatIn').onkeydown = e => { if (e.key === 'Enter') send(); };
+$('taskAdd').onclick = () => { const v = $('taskIn').value.trim(); if (v) { Modules.addTask(v); $('taskIn').value = ''; } };
+$('docAdd').onclick = () => { const v = $('docIn').value.trim(); if (v) { Modules.addDoc(v); $('docIn').value = ''; } };
+$('addIn').onclick = () => { const v = +$('amt').value; if (v > 0) { Modules.addTx(v, $('note').value); $('amt').value = $('note').value = ''; } };
+$('addOut').onclick = () => { const v = +$('amt').value; if (v > 0) { Modules.addTx(-v, $('note').value); $('amt').value = $('note').value = ''; } };
+$('shopAdd').onclick = () => { const v = $('shopIn').value.trim(); if (v) { Modules.addShop(v); $('shopIn').value = ''; } };
+['ذكرني بدفع الإيجار', 'أودع 100', 'اسحب 30', 'فاتورة الكهرباء', 'اشتري خبز', 'ملخص'].forEach(c => { const b = document.createElement('button'); b.textContent = c; b.onclick = () => send(c); $('chips').appendChild(b); });
+bubble('أهلاً! أنا رفيقك. اكتب بكلامك أو جرّب أحد الأوامر.', 'bot');
+render();
+</script>
+</body>
+</html>
